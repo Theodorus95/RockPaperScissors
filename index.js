@@ -36,34 +36,39 @@ function playRound(playerSelection, computerSelection) {
 
 let playerScore = 0;
 let computerScore = 0;
+let isGameEnded = false;
 
-function playGame() {
-  let playerSelection = prompt("Make your move, choose paper, rock or scissor");
-  while (
-    !(
-      playerSelection == "rock" ||
-      playerSelection == "paper" ||
-      playerSelection == "scissor"
-    )
-  ) {
-    playerSelection = prompt(
-      "Invalid move. Please enter either paper, rock or scissor"
-    );
+const rockBtn = document.getElementById("rockBtn");
+const paperBtn = document.getElementById("paperBtn");
+const scissorBtn = document.getElementById("scissorBtn");
+const scoreBoard = document.getElementById("scoreBoard");
+
+rockBtn.addEventListener("click", () => playGame("rock"));
+paperBtn.addEventListener("click", () => playGame("paper"));
+scissorBtn.addEventListener("click", () => playGame("scissor"));
+
+function playGame(playerSelection) {
+  if (!isGameEnded) {
+    let computerSelection = getComputerChoice();
+
+    let outcome = playRound(playerSelection, computerSelection);
+    updateScoreBoard(outcome);
+    scoreBoard.textContent = `${playerScore} - ${computerScore}`;
+
+    if (playerScore == 5 && computerScore < 5) {
+      alert("You have won the game");
+      isGameEnded = true;
+    } else if (playerScore < 5 && computerScore == 5) {
+      alert("You have lost the game");
+      isGameEnded = true;
+    }
   }
 
-  let computerSelection = getComputerChoice();
-
-  let outcome = playRound(playerSelection, computerSelection);
-  updateScoreBoard(outcome);
-  console.log(outcome.matchMessage);
-  console.log(`Score, YOU: ${playerScore} - COMPUTER: ${computerScore}`);
+  // console.log(outcome.matchMessage);
+  // console.log(`Score, YOU: ${playerScore} - COMPUTER: ${computerScore}`);
 }
 
 function updateScoreBoard(outcome) {
   if (outcome.matchOutcome === "win") playerScore++;
   if (outcome.matchOutcome === "lose") computerScore++;
-}
-
-for (let i = 0; i < 5; i++) {
-  playGame();
 }
